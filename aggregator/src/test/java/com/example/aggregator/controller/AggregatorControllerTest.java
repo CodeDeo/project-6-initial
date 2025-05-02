@@ -51,10 +51,14 @@ public class AggregatorControllerTest {
 
     @Test
     public void testGetDefinitionFor() throws Exception {
-        Entry entry = new Entry("test", "definition");
-        Mockito.when(aggregatorService.getDefinitionFor(anyString())).thenReturn(entry);
+        Entry entry1 = new Entry("test", "definition");
+        Mockito.when(aggregatorService.getDefinitionFor("test")).thenReturn(entry1);
 
         mockMvc.perform(get("/getDefinitionFor/test"))
+                .andDo(result -> {
+                    System.out.println("STATUS: " + result.getResponse().getStatus());
+                    System.out.println("BODY: " + result.getResponse().getContentAsString());
+                })
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"word\":\"test\",\"definition\":\"definition\"}"));
     }
@@ -80,11 +84,11 @@ public class AggregatorControllerTest {
     }
 
     @Test
-    public void testGetWordsThatContainSuccessiveLettersAndStartsWith() throws Exception {
+    public void testGetWordsThatContainSuccessiveLettersAndStartWith() throws Exception {
         List<Entry> entries = Arrays.asList(new Entry("letter", "definition"));
         Mockito.when(aggregatorService.getWordsThatContainSuccessiveLettersAndStartsWith(anyString())).thenReturn(entries);
 
-        mockMvc.perform(get("/getWordsThatContainSuccessiveLettersAndStartsWith/le"))
+        mockMvc.perform(get("/getWordsThatContainSuccessiveLettersAndStartWith/le"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{\"word\":\"letter\",\"definition\":\"definition\"}]"));
     }
